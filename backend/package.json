@@ -24,8 +24,10 @@
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.14.1",
     "@types/qrcode": "^1.5.5",
+    "@types/supertest": "^6.0.3",
     "jest": "^29.7.0",
     "nodemon": "^3.1.10",
+    "supertest": "^7.1.0",
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
@@ -36,6 +38,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.16.0",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.2",
     "qrcode": "^1.5.4"

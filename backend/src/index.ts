@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
+
 const app = express();
 
 app.use(cors());
@@ -18,6 +19,7 @@ mongoose.connect(MONGODB_URI)
 app.get('/', (req, res) => {
     res.send('SecurePass API');
 });
+
 
 app.listen(PORT, () => {
     console.log('Servidor corriendo en Puerto: ', PORT);
