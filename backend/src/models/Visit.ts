@@ -7,6 +7,11 @@ const visitSchema: Schema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  guardia: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   nombreVisitante: {
     type: String,
     required: true

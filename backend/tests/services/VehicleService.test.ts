@@ -3,14 +3,16 @@ import { Vehicle } from "../../src/models/Vehicle";
 import { User } from "../../src/models/User";
 import { UserRole } from "../../src/interfaces/IUser";
 import { VisitService } from "../../src/services/VisitService";
+import { UserService } from "../../src/services/UserService";
 
 describe("VehicleService", () => {
   let residentId: string;
+  let guardiaId: string;
   let visitId: string;
 
   it("Registro de un vehículo para residente", async () => {
     // Usuario residente de prueba
-    const resident = await User.create({
+    const resident = await UserService.createUser({
       nombre: "Randy Germosén",
       email: "randy@example.com",
       password: "password123",
@@ -20,6 +22,16 @@ describe("VehicleService", () => {
     });
 
     residentId = resident.id.toString();
+
+    // Usuario guardia de prueba
+    const guardia = await UserService.createUser({
+      nombre: "Augusto Paniagua",
+      email: "augusto@example.com",
+      password: "password123",
+      role: UserRole.GUARDIA,
+    });
+
+    guardiaId = guardia.id.toString();
 
     const vehicle = await VehicleService.registerVehicle({
       propietario: residentId,
@@ -37,6 +49,7 @@ describe("VehicleService", () => {
   it("Registro de un vehículo para visita", async () => {
     const visit = await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Mar Cueva",
       documentoVisitante: "V-15975325",
       motivo: "Pasadia familiar",

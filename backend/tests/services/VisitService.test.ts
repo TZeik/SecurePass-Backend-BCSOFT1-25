@@ -4,8 +4,10 @@ import { UserService } from "../../src/services/UserService";
 
 describe("VisitService", () => {
   let residentId: string;
+  let guardiaId: string;
 
   it("Crear visita", async () => {
+
     // Usuario residente de prueba
     const resident = await UserService.createUser({
       nombre: "Gauris Javier",
@@ -18,8 +20,19 @@ describe("VisitService", () => {
 
     residentId = resident.id.toString();
 
+    // Usuario guardia de prueba
+    const guardia = await UserService.createUser({
+      nombre: "Ernesto Papotico",
+      email: "ernesto@example.com",
+      password: "password123",
+      role: UserRole.GUARDIA,
+    });
+
+    guardiaId = guardia.id.toString();
+
     const visit = await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Rafael Tejada",
       documentoVisitante: "V-12345678",
       motivo: "Entrega de paquete",
@@ -33,6 +46,7 @@ describe("VisitService", () => {
   it("Registrar entrada", async () => {
     const visit = await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Manuel Domínguez",
       documentoVisitante: "V-87654321",
       motivo: "Reunión",
@@ -47,6 +61,7 @@ describe("VisitService", () => {
   it("Consultar visitas por residente", async () => {
     await VisitService.createVisit({
       residente: residentId,
+      guardia: guardiaId,
       nombreVisitante: "Pedro Pascal",
       documentoVisitante: "V-11111111",
       motivo: "Visita familiar",
