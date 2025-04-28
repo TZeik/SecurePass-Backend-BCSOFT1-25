@@ -23,6 +23,9 @@ const userSchema: Schema = new mongoose.Schema({
     enum: Object.values(UserRole),
     required: true,
   },
+  imagenUrl: {
+    type: String,
+  },
   apartamento: {
     type: String,
     required: function (this: IUser) {

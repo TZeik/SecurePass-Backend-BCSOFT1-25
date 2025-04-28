@@ -1,30 +1,30 @@
-import { Visit } from '../models/Visit';
-import { IVisit, IVisitInput } from '../interfaces/IVisit';
-import { Types } from 'mongoose';
-import { UserService } from './UserService';
+import { Visit } from "../models/Visit";
+import { IVisit, IVisitInput } from "../interfaces/IVisit";
+import { Types } from "mongoose";
+import { UserService } from "./UserService";
 
 export class VisitService {
-
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
-
     const resident = await UserService.findById(visitData.residente);
-    if (!resident) throw new Error('Residente no encontrado');
+    if (!resident) throw new Error("Residente no encontrado");
 
     return await Visit.create({
       ...visitData,
       qrId: this.generateQRId(),
-      estado: 'autorizado'
+      estado: "autorizado",
     });
   }
 
   // Registra una entrada
 
-  static async registerEntry(visitId: string | Types.ObjectId): Promise<IVisit | null> {
+  static async registerEntry(
+    visitId: string | Types.ObjectId
+  ): Promise<IVisit | null> {
     return await Visit.findByIdAndUpdate(
       visitId,
-      { 
+      {
         fechaEntrada: new Date(),
-        estado: 'procesando' 
+        estado: "procesando",
       },
       { new: true }
     );
@@ -32,8 +32,12 @@ export class VisitService {
 
   // Obetener visitas por residente
 
-  static async getVisitsByResident(residenteId: string | Types.ObjectId): Promise<IVisit[]> {
-    return await Visit.find({ residente: residenteId }).sort({ fechaAutorizacion: -1 });
+  static async getVisitsByResident(
+    residenteId: string | Types.ObjectId
+  ): Promise<IVisit[]> {
+    return await Visit.find({ residente: residenteId }).sort({
+      fechaAutorizacion: -1,
+    });
   }
 
   private static generateQRId(): string {

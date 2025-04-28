@@ -1,18 +1,10 @@
 import { Schema, model } from "mongoose";
-import { IVehicle } from "../interfaces/IVehicle";
+import { IVehicle, OwnerType } from "../interfaces/IVehicle";
 
 const vehicleSchema = new Schema<IVehicle>({
-  residente: {
+  propietario: {
     type: String,
-    ref: "User",
     required: true,
-    validate: {
-      validator: async (id: string) => {
-        const user = await model('User').findById(id);
-        return user?.role === 'residente';
-      },
-      message: 'El residente no existe o no tiene el rol correcto'
-    }
   },
   placa: {
     type: String,

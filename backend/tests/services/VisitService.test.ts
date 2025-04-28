@@ -1,7 +1,6 @@
-// src/tests/visitService.test.ts
-import { VisitService } from "../services/VisitService";
-import { UserRole } from "../interfaces/IUser";
-import { UserService } from "../services/UserService";
+import { VisitService } from "../../src/services/VisitService";
+import { UserRole } from "../../src/interfaces/IUser";
+import { UserService } from "../../src/services/UserService";
 
 describe("VisitService", () => {
   let residentId: string;

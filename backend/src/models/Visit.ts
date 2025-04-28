@@ -15,6 +15,9 @@ const visitSchema: Schema = new mongoose.Schema({
     type: String,
     required: true
   },
+  imagenUrl: {
+    type: String,
+  },
   fechaAutorizacion: {
     type: Date,
     default: Date.now

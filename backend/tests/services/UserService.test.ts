@@ -1,5 +1,5 @@
-import { UserService } from "../services/UserService";
-import { UserRole } from "../interfaces/IUser";
+import { UserService } from "../../src/services/UserService";
+import { UserRole } from "../../src/interfaces/IUser";
 
 describe("Prueba de UserService", () => {
   it("Crear usuario en MongoDB > Hashear contraseña", async () => {

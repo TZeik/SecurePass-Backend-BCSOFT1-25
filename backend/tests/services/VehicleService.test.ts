@@ -1,14 +1,14 @@
-import { VehicleService } from "../services/VehicleService";
-import { Vehicle } from "../models/Vehicle";
-import { User } from "../models/User";
-import mongoose from "mongoose";
-import { env } from "../config/env";
-import { UserRole } from "../interfaces/IUser";
+import { VehicleService } from "../../src/services/VehicleService";
+import { Vehicle } from "../../src/models/Vehicle";
+import { User } from "../../src/models/User";
+import { UserRole } from "../../src/interfaces/IUser";
+import { VisitService } from "../../src/services/VisitService";
 
 describe("VehicleService", () => {
   let residentId: string;
+  let visitId: string;
 
-  it("Registro de un vehículo", async () => {
+  it("Registro de un vehículo para residente", async () => {
     // Usuario residente de prueba
     const resident = await User.create({
       nombre: "Randy Germosén",
@@ -22,7 +22,7 @@ describe("VehicleService", () => {
     residentId = resident.id.toString();
 
     const vehicle = await VehicleService.registerVehicle({
-      residente: residentId,
+      propietario: residentId,
       placa: "A-345678",
       marca: "Honda",
       modelo: "Civic",
@@ -31,12 +31,35 @@ describe("VehicleService", () => {
 
     expect(vehicle._id).toBeDefined();
     expect(vehicle.placa).toBe("A-345678");
-    expect(vehicle.residente.toString()).toBe(residentId);
+    expect(vehicle.propietario.toString()).toBe(residentId);
+  });
+
+  it("Registro de un vehículo para visita", async () => {
+    const visit = await VisitService.createVisit({
+      residente: residentId,
+      nombreVisitante: "Mar Cueva",
+      documentoVisitante: "V-15975325",
+      motivo: "Pasadia familiar",
+    });
+
+    visitId = visit.id.toString();
+
+    const vehicle = await VehicleService.registerVehicle({
+      propietario: visitId,
+      placa: "G-258014",
+      marca: "Ford",
+      modelo: "Focus",
+      color: "Gris",
+    });
+
+    expect(vehicle._id).toBeDefined();
+    expect(vehicle.placa).toBe("G-258014");
+    expect(vehicle.propietario.toString()).toBe(visitId);
   });
 
   it("Verificación de formato de placa", async () => {
     const vehicle = await VehicleService.registerVehicle({
-      residente: residentId,
+      propietario: residentId,
       placa: "a-987654", // Placa en lowercase
       marca: "Toyota",
       modelo: "Supra",
@@ -49,7 +72,7 @@ describe("VehicleService", () => {
   it("Formato de placa inválido", async () => {
     await expect(
       VehicleService.registerVehicle({
-        residente: residentId,
+        propietario: residentId,
         placa: "ABCDEFGH-5", // Formato incorrecto
         marca: "Mazda",
         modelo: "CX-5",
@@ -60,21 +83,21 @@ describe("VehicleService", () => {
 
   it("Consulta de vehículos por residente", async () => {
     await VehicleService.registerVehicle({
-      residente: residentId,
+      propietario: residentId,
       placa: "A-963852",
       marca: "Nissan",
       modelo: "Sentra",
       color: "Blanco",
     });
 
-    const vehicles = await VehicleService.getVehiclesByResident(residentId);
+    const vehicles = await VehicleService.getVehiclesById(residentId);
     expect(vehicles.length).toBe(3); // El Civic, el Supra y el Sentra. (El CX-5 no porque su placa es inválida)
     expect(vehicles[0].placa).toBe("A-963852");
   });
 
   it("Eliminación de vehículo por placa", async () => {
     await VehicleService.registerVehicle({
-      residente: residentId,
+      propietario: residentId,
       placa: "G-147000",
       marca: "Ford",
       modelo: "Fiesta",

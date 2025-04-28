@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { Vehicle } from "../models/Vehicle";
-import { Visit } from "../models/Visit";
-import { env } from "../config/env";
-import { User } from "../models/User";
+import { Vehicle } from "../src/models/Vehicle";
+import { Visit } from "../src/models/Visit";
+import { env } from "../src/config/env";
+import { User } from "../src/models/User";
 
 
 async function clearDataBase(){

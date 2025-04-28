@@ -1,9 +1,8 @@
-
 import mongoose from 'mongoose';
-import { env } from '../config/env';
-import { User } from '../models/User';
-import { Visit } from '../models/Visit';
-import { Vehicle } from '../models/Vehicle';
+import { env } from '../src/config/env';
+import { User } from '../src/models/User';
+import { Visit } from '../src/models/Visit';
+import { Vehicle } from '../src/models/Vehicle';
 
 
 beforeAll(async () => {

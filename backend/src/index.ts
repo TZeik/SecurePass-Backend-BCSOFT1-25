@@ -18,7 +18,7 @@ mongoose.connect(MONGODB_URI)
 
 app.get('/', (req, res) => {
     res.send('SecurePass API');
-});
+}); 
 
 
 app.listen(PORT, () => {

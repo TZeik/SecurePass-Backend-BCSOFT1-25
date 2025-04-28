@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 export enum UserRole {
   RESIDENTE = 'residente',
   GUARDIA = 'guardia',
+  ADMIN = 'admin',
 }
 
 export interface IUserInput {
@@ -10,6 +11,7 @@ export interface IUserInput {
   email: string;
   password: string;
   role: UserRole;
+  imagenUrl?: string; // URL de Cloudinary
   apartamento?: string;
   torre?: string;
 }
