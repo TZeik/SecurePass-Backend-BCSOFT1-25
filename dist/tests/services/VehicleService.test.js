@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const VehicleService_1 = require("../../src/services/VehicleService");
 const Vehicle_1 = require("../../src/models/Vehicle");
-const User_1 = require("../../src/models/User");
 const IUser_1 = require("../../src/interfaces/IUser");
 const VisitService_1 = require("../../src/services/VisitService");
+const UserService_1 = require("../../src/services/UserService");
 describe("VehicleService", () => {
     let residentId;
+    let guardiaId;
     let visitId;
     it("Registro de un vehículo para residente", async () => {
         // Usuario residente de prueba
-        const resident = await User_1.User.create({
+        const resident = await UserService_1.UserService.createUser({
             nombre: "Randy Germosén",
             email: "randy@example.com",
             password: "password123",
@@ -18,7 +19,15 @@ describe("VehicleService", () => {
             apartamento: "5",
             torre: "B",
         });
-        residentId = resident.id.toString();
+        residentId = resident._id;
+        // Usuario guardia de prueba
+        const guardia = await UserService_1.UserService.createUser({
+            nombre: "Augusto Paniagua",
+            email: "augusto@example.com",
+            password: "password123",
+            role: IUser_1.UserRole.GUARDIA,
+        });
+        guardiaId = guardia._id;
         const vehicle = await VehicleService_1.VehicleService.registerVehicle({
             propietario: residentId,
             placa: "A-345678",
@@ -28,16 +37,17 @@ describe("VehicleService", () => {
         });
         expect(vehicle._id).toBeDefined();
         expect(vehicle.placa).toBe("A-345678");
-        expect(vehicle.propietario.toString()).toBe(residentId);
+        expect(vehicle.propietario).toBe(residentId);
     });
     it("Registro de un vehículo para visita", async () => {
         const visit = await VisitService_1.VisitService.createVisit({
             residente: residentId,
+            guardia: guardiaId,
             nombreVisitante: "Mar Cueva",
             documentoVisitante: "V-15975325",
             motivo: "Pasadia familiar",
         });
-        visitId = visit.id.toString();
+        visitId = visit._id;
         const vehicle = await VehicleService_1.VehicleService.registerVehicle({
             propietario: visitId,
             placa: "G-258014",
@@ -47,7 +57,7 @@ describe("VehicleService", () => {
         });
         expect(vehicle._id).toBeDefined();
         expect(vehicle.placa).toBe("G-258014");
-        expect(vehicle.propietario.toString()).toBe(visitId);
+        expect(vehicle.propietario).toBe(visitId);
     });
     it("Verificación de formato de placa", async () => {
         const vehicle = await VehicleService_1.VehicleService.registerVehicle({

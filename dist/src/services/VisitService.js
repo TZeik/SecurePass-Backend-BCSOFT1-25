@@ -14,6 +14,16 @@ class VisitService {
             estado: "autorizado",
         });
     }
+    // Actualiza una visita
+    static async updateVisit(visitId, updateData) {
+        if (updateData.guardia) {
+            const guardia = await UserService_1.UserService.findById(updateData.guardia);
+            if (!guardia || guardia.role !== "guardia") {
+                throw new Error("Guardia no válido");
+            }
+        }
+        return await Visit_1.Visit.findByIdAndUpdate(visitId, { ...updateData }, { new: true, runValidators: true });
+    }
     // Registra una entrada
     static async registerEntry(visitId) {
         return await Visit_1.Visit.findByIdAndUpdate(visitId, {
@@ -27,8 +37,17 @@ class VisitService {
             fechaAutorizacion: -1,
         });
     }
+    // Obtener visitas por guardia
+    static async getVisitsByGuard(guardId) {
+        return await Visit_1.Visit.find({ guardia: guardId })
+            .sort({ fechaEntrada: -1 })
+            .populate("residente", "nombre apartamento");
+    }
     static generateQRId() {
         return `qr-${Math.random().toString(36).substring(2, 10)}-${Date.now()}`;
+    }
+    static async deleteVisit(visitId) {
+        await Visit_1.Visit.findByIdAndDelete(visitId);
     }
 }
 exports.VisitService = VisitService;

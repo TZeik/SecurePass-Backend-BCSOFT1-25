@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import {  registerEntry, registerExit } from '../middleware/visitController';
-import { validateTask } from '../middleware/validateTask';
+import {  registerEntry, registerExit } from '../controllers/visitController';
+
 const router = Router();
 
 

@@ -3,10 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Visit = exports.visitSchema = void 0;
+exports.Visit = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-exports.visitSchema = new mongoose_1.default.Schema({
+const visitSchema = new mongoose_1.default.Schema({
     residente: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    guardia: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -46,5 +51,5 @@ exports.visitSchema = new mongoose_1.default.Schema({
         required: true
     }
 });
-exports.Visit = mongoose_1.default.model('Visit', exports.visitSchema);
+exports.Visit = mongoose_1.default.model('Visit', visitSchema);
 exports.default = exports.Visit;

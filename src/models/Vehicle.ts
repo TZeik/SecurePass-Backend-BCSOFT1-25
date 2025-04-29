@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { IVehicle, OwnerType } from "../interfaces/IVehicle";
 
-const vehicleSchema = new Schema<IVehicle>({
+const vehicleSchema = new mongoose.Schema({
   propietario: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   placa: {

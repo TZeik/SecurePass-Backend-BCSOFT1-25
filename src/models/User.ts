@@ -1,7 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import { IUser, UserRole } from "../interfaces/IUser";
-import e from "express";
 
 const userSchema: Schema = new mongoose.Schema({
   nombre: {

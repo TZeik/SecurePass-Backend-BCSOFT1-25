@@ -1,8 +1,13 @@
 import mongoose, { Schema, Model } from 'mongoose';
 import { IVisit } from '../interfaces/IVisit';
 
-export const visitSchema: Schema = new mongoose.Schema({
+const visitSchema: Schema = new mongoose.Schema({
   residente: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  guardia: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -44,4 +49,5 @@ export const visitSchema: Schema = new mongoose.Schema({
 });
 
 export const Visit: Model<IVisit> = mongoose.model<IVisit>('Visit', visitSchema);
+
 export default Visit;
