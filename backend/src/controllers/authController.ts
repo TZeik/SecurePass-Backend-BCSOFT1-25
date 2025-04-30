@@ -4,12 +4,12 @@ import bcrypt from "bcrypt";
 import { User } from "../models/User";
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-    const { nombre, correo, password, role } = req.body;
+    const { nombre, email, password, role } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        const newUser = new User({ nombre, correo, contraseña: hashedPassword, role });
+        const newUser = new User({ nombre, email, password: hashedPassword, role });
         await newUser.save();
 
         res.status(201).json({ message: "Usuario registrado exitosamente." });
@@ -20,31 +20,42 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const loginUser = async (req: Request, res: Response): Promise<void> => {
-    const { correo, password } = req.body;
+export const loginUser = async (req: Request, res: Response): Promise<Response | void> => {
+    const { email, password } = req.body;
 
     try {
-        
-        const user = await User.findOne({ correo });
+        const cleanEmail = email?.trim();
+        const cleanPassword = password?.trim();
+
+        if (!cleanEmail || !cleanPassword) {
+            return res.status(400).json({ error: "Email y contraseña son requeridos." });
+        }
+
+        const user = await User.findOne({ email: cleanEmail });
         if (!user) {
-            res.status(401).json({ error: "Credenciales inválidas." });
-            return;
+            console.warn(`Intento de acceso con email no registrado: ${cleanEmail}`);
+            return res.status(401).json({ error: "Credenciales inválidas." });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        
+        const isPasswordValid = await bcrypt.compare(cleanPassword, user.password);
         if (!isPasswordValid) {
-            res.status(401).json({ error: "Credenciales inválidas." });
-            return;
+            console.warn(`Intento de acceso fallido para usuario: ${cleanEmail}`);
+            return res.status(401).json({ error: "Credenciales inválidas." });
         }
 
-        const token = jwt.sign({ id: user._id, rol: user.role }, process.env.JWT_SECRET as string, {
-            expiresIn: "1h",
-        });
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "1h", algorithm: "HS256" }
+        );
 
-        res.status(200).json({ token });
-        return;
-    } catch (error) {
-        res.status(500).json({ error: "Error al iniciar sesión." });
-        return;
+        return res.status(200).json({ token, user: { id: user._id, role: user.role, email: user.email } });
+    } catch (error: unknown) {
+        const err = error as Error;
+        console.error("Error al iniciar sesión:", err.message);
+        return res.status(500).json({ error: "Error interno en autenticación.", details: err.message });
     }
+
 };
+
