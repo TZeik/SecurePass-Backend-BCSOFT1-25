@@ -21,7 +21,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 };
 
 export const loginUser = async (req: Request, res: Response): Promise<Response | void> => {
-    const { email, password } = req.body;
+    const { email, password, expiresIn } = req.body;
 
     try {
         const cleanEmail = email?.trim();
@@ -37,25 +37,27 @@ export const loginUser = async (req: Request, res: Response): Promise<Response |
             return res.status(401).json({ error: "Credenciales inválidas." });
         }
 
-        
         const isPasswordValid = await bcrypt.compare(cleanPassword, user.password);
         if (!isPasswordValid) {
             console.warn(`Intento de acceso fallido para usuario: ${cleanEmail}`);
             return res.status(401).json({ error: "Credenciales inválidas." });
         }
 
+        const tokenExpiration = expiresIn ? expiresIn : user.role === "admin" ? "1h" : "24h";
+
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET as string,
-            { expiresIn: "1h", algorithm: "HS256" }
+            { expiresIn: tokenExpiration, algorithm: "HS256" }
         );
 
-        return res.status(200).json({ token, user: { id: user._id, role: user.role, email: user.email } });
+        return res.status(200).json({ token, user: { id: user._id, role: user.role, email: user.email }, expiresIn: tokenExpiration });
+
     } catch (error: unknown) {
         const err = error as Error;
         console.error("Error al iniciar sesión:", err.message);
         return res.status(500).json({ error: "Error interno en autenticación.", details: err.message });
     }
-
 };
+
 
