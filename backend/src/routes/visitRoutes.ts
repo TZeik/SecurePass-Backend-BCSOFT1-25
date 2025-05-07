@@ -11,7 +11,7 @@ import {
   getVisitsByResident,
   getVisitsByGuard
 } from "../controllers/visitController";
-import { getVisitReport } from "../controllers/repController";
+import { getVisitHistoryByResident } from "../controllers/repController";
 
 const router = Router();
 
@@ -23,11 +23,14 @@ router.put('/visits/exit/:qrId', registerExit);
 router.get('/visits', getAllVisits);
 router.get('/visits/:id', getVisitById);
 router.get('/visits/qr/:qrId', getVisitByQR);
-router.get('/visits/resident/:residenteId', getVisitsByResident);
+// router.get('/visits/resident/:residenteId', getVisitsByResident);
 router.get('/visits/guard/:guardId', getVisitsByGuard);
-
+router.get("/visits/resident/:residenteId", getVisitHistoryByResident);
 // Ruta para reportes de visitas
-router.get('/visits/report', getVisitReport);
+// router.get('/visits/report', getVisitReport);
+
+//Ruta para obtenerla por id
+
 
 // Actualización de visitas
 router.patch('/visits/:id/status', updateVisitStatus);

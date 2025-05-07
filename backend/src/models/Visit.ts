@@ -1,4 +1,5 @@
 import mongoose, { Schema, Model } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 import { IVisit } from "../interfaces/IVisit";
 
 const visitSchema: Schema = new mongoose.Schema({
@@ -36,6 +37,8 @@ const visitSchema: Schema = new mongoose.Schema({
   qrId: {
     type: String,
     unique: true,
+    default: uuidv4,
+   
   },
   estado: {
     type: String,

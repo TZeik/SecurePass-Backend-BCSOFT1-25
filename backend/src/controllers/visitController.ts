@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { VisitService } from "../services/VisitService";
 import { IVisit, IVisitInput } from "../interfaces/IVisit";
 import Visit from "../models/Visit";
+import { v4 as uuidv4 } from "uuid";
+import mongoose from "mongoose";
 
 export const registerEntry = async (
   req: Request,
@@ -9,15 +11,34 @@ export const registerEntry = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const visitData: IVisitInput = req.body;
-    const newVisit = await VisitService.createVisit(visitData);
+    const { residente, guardia, nombreVisitante, documentoVisitante, motivo, imagenUrl } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(residente)) {
+      res.status(400).json({ message: "ID de residente inválido" });
+      return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(guardia)) {
+      res.status(400).json({ message: "ID de guardia inválido" });
+      return;
+    }
+
+    const newVisit = await Visit.create({
+      residente,
+      guardia,
+      nombreVisitante,
+      documentoVisitante,
+      motivo,
+      imagenUrl,
+      qrid:uuidv4(),
+    });
+
     res.status(201).json({ message: "Visita registrada con éxito", data: newVisit });
   } catch (error) {
     console.error("Error registrando entrada:", error);
     next(error);
   }
 };
-
 export const registerExit = async (
   req: Request,
   res: Response,

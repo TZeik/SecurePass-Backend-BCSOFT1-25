@@ -4,6 +4,10 @@ import { Types } from "mongoose";
 import { UserService } from "./UserService";
 
 export class VisitService {
+  static validateResident: any;
+  static findById(visitData: IVisitInput) {
+    throw new Error("Method not implemented.");
+  }
   static async createVisit(visitData: IVisitInput): Promise<IVisit> {
     const resident = await UserService.findById(visitData.residente);
     const guard = await UserService.findById(visitData.guardia);
